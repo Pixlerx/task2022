@@ -1,0 +1,32 @@
+#!/bin/bash
+# chkconfig: 2345 20 80
+# description: arp table
+
+case "$1" in
+start)
+ echo "$(date) service myscript1234 started"  >> /var/log/arp_table
+ /opt/myscript1234.sh &
+ echo $!>/var/run/myscript1234.pid
+ ;;
+stop)
+ echo "$(date) service myscript1234 stopped"  >> /var/log/arp_table
+ kill 'cat /var/run/myscript1234.pid'
+ rm /var/run/myscript1234.pid
+ ;;
+restart)
+ $0 stop
+ $0 start
+ ;;
+status)
+ if [ -e /var/run/myscript1234.pid ]; then
+  echo myscript1234 ranning, pid=$(cat /var/run/myscript1234.pid)
+ else
+  echo myscript1234 is not running
+  exit 1
+ fi
+ ;;
+*)
+ echo "Usage:$0 {start|stop|restart|status}"
+esac
+
+exit 0
